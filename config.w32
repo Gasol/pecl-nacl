@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("nacl", "for nacl support", "no");
+
+// Otherwise, use ARG_ENABLE
+// ARG_ENABLE("nacl", "enable nacl support", "no");
+
+if (PHP_NACL != "no") {
+	EXTENSION("nacl", "nacl.c");
+}
+
