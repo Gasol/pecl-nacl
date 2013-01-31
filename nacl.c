@@ -26,6 +26,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_nacl.h"
+#include "crypto_stream.h"
 
 /* If you declare any globals in php_nacl.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(nacl)
@@ -39,6 +40,7 @@ static int le_nacl;
  * Every user visible function must have an entry in nacl_functions[].
  */
 const zend_function_entry nacl_functions[] = {
+	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE_END	/* Must be the last line in nacl_functions[] */
 };
 /* }}} */
@@ -139,6 +141,27 @@ PHP_MINFO_FUNCTION(nacl)
 	/* Remove comments if you have entries in php.ini
 	DISPLAY_INI_ENTRIES();
 	*/
+}
+/* }}} */
+
+/* {{{ nacl_crypto_stream
+ */
+PHP_FUNCTION(nacl_crypto_stream)
+{
+	unsigned char *returnval, *data, *key, *nonce = NULL;
+	int data_len, key_len, nonce_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &data, &data_len, &nonce, &nonce_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	returnval = safe_emalloc(data_len, 1, 1);
+
+	if (crypto_stream(returnval, data_len, nonce, key)) {
+		RETURN_FALSE;
+	}
+
+	RETURN_STRINGL((char *) returnval, data_len, 0);
 }
 /* }}} */
 

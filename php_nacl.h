@@ -42,6 +42,8 @@ PHP_RINIT_FUNCTION(nacl);
 PHP_RSHUTDOWN_FUNCTION(nacl);
 PHP_MINFO_FUNCTION(nacl);
 
+PHP_FUNCTION(nacl_crypto_stream);
+
 /* 
   	Declare any global variables you may need between the BEGIN
 	and END macros here:     
