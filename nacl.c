@@ -41,6 +41,7 @@ static int le_nacl;
  */
 const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_stream, NULL)
+	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE_END	/* Must be the last line in nacl_functions[] */
 };
 /* }}} */
@@ -158,6 +159,27 @@ PHP_FUNCTION(nacl_crypto_stream)
 	returnval = safe_emalloc(data_len, 1, 1);
 
 	if (crypto_stream(returnval, data_len, nonce, key)) {
+		RETURN_FALSE;
+	}
+
+	RETURN_STRINGL((char *) returnval, data_len, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_stream_xor
+ */
+PHP_FUNCTION(nacl_crypto_stream_xor)
+{
+	unsigned char *returnval, *data, *key, *nonce = NULL;
+	int data_len, key_len, nonce_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &data, &data_len, &nonce, &nonce_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	returnval = safe_emalloc(data_len, 1, 1);
+
+	if (crypto_stream_xor(returnval, data, data_len, nonce, key)) {
 		RETURN_FALSE;
 	}
 
