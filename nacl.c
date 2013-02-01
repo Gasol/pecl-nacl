@@ -149,6 +149,8 @@ PHP_MINFO_FUNCTION(nacl)
  */
 PHP_FUNCTION(nacl_crypto_stream)
 {
+	const unsigned char k[crypto_stream_KEYBYTES];
+	const unsigned char n[crypto_stream_NONCEBYTES];
 	unsigned char *returnval, *data, *key, *nonce = NULL;
 	int data_len, key_len, nonce_len = 0;
 
@@ -156,9 +158,12 @@ PHP_FUNCTION(nacl_crypto_stream)
 		return;
 	}
 
+	strncpy(k, key, crypto_stream_KEYBYTES);
+	strncpy(n, nonce, crypto_stream_NONCEBYTES);
+
 	returnval = safe_emalloc(data_len, 1, 1);
 
-	if (crypto_stream(returnval, data_len, nonce, key)) {
+	if (crypto_stream(returnval, data_len, n, k)) {
 		RETURN_FALSE;
 	}
 
@@ -170,6 +175,8 @@ PHP_FUNCTION(nacl_crypto_stream)
  */
 PHP_FUNCTION(nacl_crypto_stream_xor)
 {
+	const unsigned char k[crypto_stream_KEYBYTES];
+	const unsigned char n[crypto_stream_NONCEBYTES];
 	unsigned char *returnval, *data, *key, *nonce = NULL;
 	int data_len, key_len, nonce_len = 0;
 
@@ -177,9 +184,12 @@ PHP_FUNCTION(nacl_crypto_stream_xor)
 		return;
 	}
 
+	strncpy(k, key, crypto_stream_KEYBYTES);
+	strncpy(n, nonce, crypto_stream_NONCEBYTES);
+
 	returnval = safe_emalloc(data_len, 1, 1);
 
-	if (crypto_stream_xor(returnval, data, data_len, nonce, key)) {
+	if (crypto_stream_xor(returnval, data, data_len, n, k)) {
 		RETURN_FALSE;
 	}
 
