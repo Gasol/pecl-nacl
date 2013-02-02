@@ -41,6 +41,7 @@ static int le_nacl;
  * Every user visible function must have an entry in nacl_functions[].
  */
 const zend_function_entry nacl_functions[] = {
+	PHP_FE(nacl_crypto_auth, NULL)
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE_END
@@ -117,6 +118,30 @@ PHP_MINFO_FUNCTION(nacl)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "nacl support", "enabled");
 	php_info_print_table_end();
+}
+/* }}} */
+
+/* {{{ nacl_crypto_auth
+ */
+PHP_FUNCTION(nacl_crypto_auth)
+{
+	const unsigned char k[crypto_auth_KEYBYTES];
+	unsigned char *returnval, *data, *key = NULL;
+	int data_len, key_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &data, &data_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	strncpy((char *) &k, (const char *) key, crypto_auth_KEYBYTES);
+
+	returnval = safe_emalloc(crypto_auth_BYTES, 1, 1);
+
+	if (crypto_auth(returnval, data, data_len, k)) {
+		RETURN_FALSE;
+	}
+
+	RETURN_STRINGL((char *) returnval, crypto_auth_BYTES, 0);
 }
 /* }}} */
 
