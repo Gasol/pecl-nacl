@@ -40,6 +40,11 @@ ZEND_DECLARE_MODULE_GLOBALS(nacl)
 /* True global resources - no need for thread safety here */
 static int le_nacl;
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_keypair, 0, 0, 1)
+	ZEND_ARG_INFO(1, public_key)
+	ZEND_ARG_INFO(1, secret_key)
+ZEND_END_ARG_INFO()
+
 /* {{{ nacl_functions[]
  *
  * Every user visible function must have an entry in nacl_functions[].
@@ -51,6 +56,7 @@ const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE(nacl_crypto_secretbox, NULL)
 	PHP_FE(nacl_crypto_secretbox_open, NULL)
+	PHP_FE(nacl_crypto_sign_keypair, arginfo_nacl_crypto_sign_keypair)
 	PHP_FE(nacl_crypto_onetimeauth, NULL)
 	PHP_FE(nacl_crypto_onetimeauth_verify, NULL)
 	PHP_FE(nacl_crypto_hash, NULL)
@@ -370,6 +376,45 @@ PHP_FUNCTION(nacl_crypto_hash)
 	}
 
 	RETURN_STRINGL((char *) returnval, crypto_hash_BYTES, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_sign_keypair
+ */
+PHP_FUNCTION(nacl_crypto_sign_keypair)
+{
+	unsigned char pk[crypto_sign_PUBLICKEYBYTES], sk[crypto_sign_SECRETKEYBYTES];
+	zval *pubkey = NULL, *seckey = NULL;
+	zend_bool raw_output = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/z/b", &pubkey, &seckey, &raw_output) == FAILURE) {
+		return;
+	}
+
+	if (pubkey) {
+		zval_dtor(pubkey);
+	}
+	if (seckey) {
+		zval_dtor(seckey);
+	}
+
+	if (crypto_sign_keypair(pk, sk)) {
+		RETURN_FALSE;
+	}
+
+	if (raw_output) {
+		ZVAL_STRINGL(pubkey, ((const char *) &pk), crypto_sign_PUBLICKEYBYTES, 1);
+		ZVAL_STRINGL(seckey, ((const char *) &sk), crypto_sign_SECRETKEYBYTES, 1);
+	} else {
+		char *pubkey_digest = safe_emalloc(sizeof(char), crypto_sign_PUBLICKEYBYTES * 2, 0);
+		char *seckey_digest = safe_emalloc(sizeof(char), crypto_sign_SECRETKEYBYTES * 2, 0);
+		php_nacl_bin2hex(pubkey_digest, ((const unsigned char *) &pk), crypto_sign_PUBLICKEYBYTES);
+		php_nacl_bin2hex(seckey_digest, ((const unsigned char *) &sk), crypto_sign_SECRETKEYBYTES);
+		ZVAL_STRINGL(pubkey, pubkey_digest, crypto_sign_PUBLICKEYBYTES * 2, 0);
+		ZVAL_STRINGL(seckey, seckey_digest, crypto_sign_SECRETKEYBYTES * 2, 0);
+	}
+
+	RETURN_TRUE;
 }
 /* }}} */
 

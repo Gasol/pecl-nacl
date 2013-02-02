@@ -48,9 +48,21 @@ PHP_FUNCTION(nacl_crypto_stream);
 PHP_FUNCTION(nacl_crypto_stream_xor);
 PHP_FUNCTION(nacl_crypto_secretbox);
 PHP_FUNCTION(nacl_crypto_secretbox_open);
+PHP_FUNCTION(nacl_crypto_sign_keypair);
 PHP_FUNCTION(nacl_crypto_onetimeauth);
 PHP_FUNCTION(nacl_crypto_onetimeauth_verify);
 PHP_FUNCTION(nacl_crypto_hash);
+
+static inline void php_nacl_bin2hex(char *out, const unsigned char *in, int in_len)
+{
+	static const char hexits[17] = "0123456789abcdef";
+	int i;
+
+	for(i = 0; i < in_len; i++) {
+		out[i * 2]       = hexits[in[i] >> 4];
+		out[(i * 2) + 1] = hexits[in[i] &  0x0F];
+	}
+}
 
 /* 
   	Declare any global variables you may need between the BEGIN
