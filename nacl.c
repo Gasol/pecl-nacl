@@ -26,6 +26,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_nacl.h"
+#include "crypto_auth.h"
 #include "crypto_stream.h"
 
 /* If you declare any globals in php_nacl.h uncomment this:
@@ -74,6 +75,8 @@ ZEND_GET_MODULE(nacl)
  */
 PHP_MINIT_FUNCTION(nacl)
 {
+	REGISTER_LONG_CONSTANT("NACL_CRYPTO_AUTH_BYTES", crypto_auth_BYTES, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("NACL_CRYPTO_AUTH_KEYBYTES", crypto_auth_KEYBYTES, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("NACL_CRYPTO_STREAM_KEYBYTES", crypto_stream_KEYBYTES, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("NACL_CRYPTO_STREAM_NONCEBYTES", crypto_stream_NONCEBYTES, CONST_CS | CONST_PERSISTENT);
 	REGISTER_STRING_CONSTANT("NACL_CRYPTO_STREAM_PRIMITIVE", crypto_stream_PRIMITIVE, CONST_CS | CONST_PERSISTENT);
