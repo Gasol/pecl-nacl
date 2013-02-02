@@ -50,6 +50,7 @@ const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_secretbox, NULL)
 	PHP_FE(nacl_crypto_secretbox_open, NULL)
 	PHP_FE(nacl_crypto_onetimeauth, NULL)
+	PHP_FE(nacl_crypto_onetimeauth_verify, NULL)
 	PHP_FE_END
 };
 /* }}} */
@@ -311,6 +312,28 @@ PHP_FUNCTION(nacl_crypto_onetimeauth)
 	}
 
 	RETURN_STRINGL((char *) returnval, crypto_onetimeauth_BYTES, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_onetimeauth_verify
+ */
+PHP_FUNCTION(nacl_crypto_onetimeauth_verify)
+{
+	const unsigned char k[crypto_onetimeauth_KEYBYTES];
+	unsigned char *auth, *data, *key = NULL;
+	int auth_len, data_len, key_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &auth, &auth_len, &data, &data_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	strncpy((char *) &k, (const char *) key, crypto_onetimeauth_KEYBYTES);
+
+	if (crypto_onetimeauth_verify(auth, data, data_len, k)) {
+		RETURN_FALSE;
+	} else {
+		RETURN_TRUE;
+	}
 }
 /* }}} */
 
