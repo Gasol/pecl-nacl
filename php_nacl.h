@@ -49,6 +49,7 @@ PHP_FUNCTION(nacl_crypto_stream_xor);
 PHP_FUNCTION(nacl_crypto_secretbox);
 PHP_FUNCTION(nacl_crypto_secretbox_open);
 PHP_FUNCTION(nacl_crypto_sign);
+PHP_FUNCTION(nacl_crypto_sign_open);
 PHP_FUNCTION(nacl_crypto_sign_keypair);
 PHP_FUNCTION(nacl_crypto_onetimeauth);
 PHP_FUNCTION(nacl_crypto_onetimeauth_verify);
