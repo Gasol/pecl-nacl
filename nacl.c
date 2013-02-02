@@ -42,6 +42,7 @@ static int le_nacl;
  */
 const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_auth, NULL)
+	PHP_FE(nacl_crypto_auth_verify, NULL)
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE_END
@@ -145,6 +146,26 @@ PHP_FUNCTION(nacl_crypto_auth)
 	}
 
 	RETURN_STRINGL((char *) returnval, crypto_auth_BYTES, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_auth_verify
+ */
+PHP_FUNCTION(nacl_crypto_auth_verify)
+{
+	unsigned char *hash, *data, *key = NULL;
+	int hash_len, data_len, key_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &hash, &hash_len, &data, &data_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	int ret = crypto_auth_verify(hash, data, data_len, key);
+	if (ret) {
+		RETURN_FALSE;
+	} else {
+		RETURN_TRUE;
+	}
 }
 /* }}} */
 
