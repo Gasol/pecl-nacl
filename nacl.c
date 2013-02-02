@@ -42,7 +42,7 @@ static int le_nacl;
 const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
-	PHP_FE_END	/* Must be the last line in nacl_functions[] */
+	PHP_FE_END
 };
 /* }}} */
 
@@ -56,8 +56,8 @@ zend_module_entry nacl_module_entry = {
 	nacl_functions,
 	PHP_MINIT(nacl),
 	PHP_MSHUTDOWN(nacl),
-	PHP_RINIT(nacl),		/* Replace with NULL if there's nothing to do at request start */
-	PHP_RSHUTDOWN(nacl),	/* Replace with NULL if there's nothing to do at request end */
+	PHP_RINIT(nacl),
+	PHP_RSHUTDOWN(nacl),
 	PHP_MINFO(nacl),
 #if ZEND_MODULE_API_NO >= 20010901
 	"0.1", /* Replace with version number for your extension */
@@ -70,34 +70,10 @@ zend_module_entry nacl_module_entry = {
 ZEND_GET_MODULE(nacl)
 #endif
 
-/* {{{ PHP_INI
- */
-/* Remove comments and fill if you need to have entries in php.ini
-PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("nacl.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_nacl_globals, nacl_globals)
-    STD_PHP_INI_ENTRY("nacl.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_nacl_globals, nacl_globals)
-PHP_INI_END()
-*/
-/* }}} */
-
-/* {{{ php_nacl_init_globals
- */
-/* Uncomment this function if you have INI entries
-static void php_nacl_init_globals(zend_nacl_globals *nacl_globals)
-{
-	nacl_globals->global_value = 0;
-	nacl_globals->global_string = NULL;
-}
-*/
-/* }}} */
-
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(nacl)
 {
-	/* If you have INI entries, uncomment these lines 
-	REGISTER_INI_ENTRIES();
-	*/
 	return SUCCESS;
 }
 /* }}} */
@@ -106,14 +82,10 @@ PHP_MINIT_FUNCTION(nacl)
  */
 PHP_MSHUTDOWN_FUNCTION(nacl)
 {
-	/* uncomment this line if you have INI entries
-	UNREGISTER_INI_ENTRIES();
-	*/
 	return SUCCESS;
 }
 /* }}} */
 
-/* Remove if there's nothing to do at request start */
 /* {{{ PHP_RINIT_FUNCTION
  */
 PHP_RINIT_FUNCTION(nacl)
@@ -122,7 +94,6 @@ PHP_RINIT_FUNCTION(nacl)
 }
 /* }}} */
 
-/* Remove if there's nothing to do at request end */
 /* {{{ PHP_RSHUTDOWN_FUNCTION
  */
 PHP_RSHUTDOWN_FUNCTION(nacl)
@@ -138,10 +109,6 @@ PHP_MINFO_FUNCTION(nacl)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "nacl support", "enabled");
 	php_info_print_table_end();
-
-	/* Remove comments if you have entries in php.ini
-	DISPLAY_INI_ENTRIES();
-	*/
 }
 /* }}} */
 
@@ -149,8 +116,7 @@ PHP_MINFO_FUNCTION(nacl)
  */
 PHP_FUNCTION(nacl_crypto_stream)
 {
-	const unsigned char k[crypto_stream_KEYBYTES];
-	const unsigned char n[crypto_stream_NONCEBYTES];
+	const unsigned char k[crypto_stream_KEYBYTES], n[crypto_stream_NONCEBYTES];
 	unsigned char *returnval, *data, *key, *nonce = NULL;
 	int data_len, key_len, nonce_len = 0;
 
@@ -158,8 +124,8 @@ PHP_FUNCTION(nacl_crypto_stream)
 		return;
 	}
 
-	strncpy(k, key, crypto_stream_KEYBYTES);
-	strncpy(n, nonce, crypto_stream_NONCEBYTES);
+	strncpy((char *) &k, (const char *) key, crypto_stream_KEYBYTES);
+	strncpy((char *) &n, (const char *) nonce, crypto_stream_NONCEBYTES);
 
 	returnval = safe_emalloc(data_len, 1, 1);
 
@@ -175,8 +141,7 @@ PHP_FUNCTION(nacl_crypto_stream)
  */
 PHP_FUNCTION(nacl_crypto_stream_xor)
 {
-	const unsigned char k[crypto_stream_KEYBYTES];
-	const unsigned char n[crypto_stream_NONCEBYTES];
+	const unsigned char k[crypto_stream_KEYBYTES], n[crypto_stream_NONCEBYTES];
 	unsigned char *returnval, *data, *key, *nonce = NULL;
 	int data_len, key_len, nonce_len = 0;
 
@@ -184,8 +149,8 @@ PHP_FUNCTION(nacl_crypto_stream_xor)
 		return;
 	}
 
-	strncpy(k, key, crypto_stream_KEYBYTES);
-	strncpy(n, nonce, crypto_stream_NONCEBYTES);
+	strncpy((char *) &k, (const char *) key, crypto_stream_KEYBYTES);
+	strncpy((char *) &n, (const char *) nonce, crypto_stream_NONCEBYTES);
 
 	returnval = safe_emalloc(data_len, 1, 1);
 
