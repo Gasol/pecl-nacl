@@ -1,5 +1,5 @@
 --TEST--
-Check for constants
+Check for constants of nacl_crypto_stream
 --SKIPIF--
 <?php if (!extension_loaded('nacl')) echo 'skip'; ?>
 --FILE--
