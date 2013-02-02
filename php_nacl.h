@@ -50,6 +50,7 @@ PHP_FUNCTION(nacl_crypto_secretbox);
 PHP_FUNCTION(nacl_crypto_secretbox_open);
 PHP_FUNCTION(nacl_crypto_onetimeauth);
 PHP_FUNCTION(nacl_crypto_onetimeauth_verify);
+PHP_FUNCTION(nacl_crypto_hash);
 
 /* 
   	Declare any global variables you may need between the BEGIN
