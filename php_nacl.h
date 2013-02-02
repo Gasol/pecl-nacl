@@ -48,6 +48,7 @@ PHP_FUNCTION(nacl_crypto_stream);
 PHP_FUNCTION(nacl_crypto_stream_xor);
 PHP_FUNCTION(nacl_crypto_secretbox);
 PHP_FUNCTION(nacl_crypto_secretbox_open);
+PHP_FUNCTION(nacl_crypto_onetimeauth);
 
 /* 
   	Declare any global variables you may need between the BEGIN
