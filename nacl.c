@@ -47,6 +47,7 @@ const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE(nacl_crypto_secretbox, NULL)
+	PHP_FE(nacl_crypto_secretbox_open, NULL)
 	PHP_FE_END
 };
 /* }}} */
@@ -249,6 +250,31 @@ PHP_FUNCTION(nacl_crypto_secretbox)
 	returnval = safe_emalloc(data_len, 1, 1);
 
 	if (crypto_secretbox(returnval, data, data_len, n, k)) {
+		RETURN_FALSE;
+	}
+
+	RETURN_STRINGL((char *) returnval, data_len, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_secretbox_open
+ */
+PHP_FUNCTION(nacl_crypto_secretbox_open)
+{
+	const unsigned char k[crypto_secretbox_KEYBYTES], n[crypto_secretbox_NONCEBYTES];
+	unsigned char *returnval, *data, *key, *nonce = NULL;
+	int data_len, key_len, nonce_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &data, &data_len, &nonce, &nonce_len, &key, &key_len) == FAILURE) {
+		return;
+	}
+
+	strncpy((char *) &k, (const char *) key, crypto_secretbox_KEYBYTES);
+	strncpy((char *) &n, (const char *) nonce, crypto_secretbox_NONCEBYTES);
+
+	returnval = safe_emalloc(data_len, 1, 1);
+
+	if (crypto_secretbox_open(returnval, data, data_len, n, k)) {
 		RETURN_FALSE;
 	}
 
