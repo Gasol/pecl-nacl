@@ -426,7 +426,8 @@ PHP_FUNCTION(nacl_crypto_sign)
 {
 	unsigned char sk[crypto_sign_SECRETKEYBYTES];
 	unsigned char *sm = NULL, *data = NULL, *secretkey = NULL;
-	int sm_len = 0, data_len = 0, secretkey_len = 0, sm_len_max;
+	int data_len = 0, secretkey_len = 0, sm_len_max;
+	unsigned long long sm_len = 0;
 	zend_bool raw_output = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|b", &data, &data_len, &secretkey, &secretkey_len, &raw_output) == FAILURE) {
@@ -443,7 +444,7 @@ PHP_FUNCTION(nacl_crypto_sign)
 	}
 
 	if (raw_output) {
-		RETURN_STRINGL(sm, sm_len, 0);
+		RETURN_STRINGL((const char *) sm, sm_len, 0);
 	} else {
 		int sm_digest_len = sm_len_max * 2;
 		char *sm_digest = safe_emalloc(sizeof(char), sm_digest_len, 0);
@@ -460,7 +461,8 @@ PHP_FUNCTION(nacl_crypto_sign_open)
 {
 	unsigned char pk[crypto_sign_PUBLICKEYBYTES];
 	unsigned char *returnvalue = NULL, *data = NULL, *pubkey = NULL;
-	int returnvalue_len = 0, data_len = 0, pubkey_len = 0;
+	int data_len = 0, pubkey_len = 0;
+	unsigned long long returnvalue_len = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &data, &data_len, &pubkey, &pubkey_len) == FAILURE) {
 		return;
@@ -474,7 +476,7 @@ PHP_FUNCTION(nacl_crypto_sign_open)
 		RETURN_FALSE;
 	}
 
-	RETURN_STRINGL(returnvalue, returnvalue_len, 0);
+	RETURN_STRINGL((const char *) returnvalue, returnvalue_len, 0);
 }
 /* }}} */
 
