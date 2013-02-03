@@ -57,6 +57,7 @@ ZEND_END_ARG_INFO()
 const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_auth, NULL)
 	PHP_FE(nacl_crypto_auth_verify, NULL)
+	PHP_FE(nacl_crypto_box, NULL)
 	PHP_FE(nacl_crypto_box_keypair, arginfo_nacl_crypto_box_keypair)
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
@@ -532,6 +533,47 @@ PHP_FUNCTION(nacl_crypto_box_keypair)
 	}
 
 	RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ nacl_crypto_box
+ */
+PHP_FUNCTION(nacl_crypto_box)
+{
+	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES], n[crypto_box_NONCEBYTES];
+	unsigned char *returnvalue = NULL, *m = NULL, *data = NULL, *nonce = NULL, *pubkey = NULL, *seckey = NULL;
+	int m_len = 0, data_len = 0, nonce_len = 0, pubkey_len = 0, seckey_len = 0;
+	unsigned long long sm_len = 0;
+	zend_bool raw_output = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss|b", &data, &data_len,
+				&nonce, &nonce_len, &pubkey, &pubkey_len, &seckey, &seckey_len, &raw_output) == FAILURE) {
+		return;
+	}
+
+	strncpy((char *) &sk, (const char *) seckey, crypto_box_SECRETKEYBYTES);
+	strncpy((char *) &pk, (const char *) pubkey, crypto_box_PUBLICKEYBYTES);
+	strncpy((char *) &n, (const char *) nonce, crypto_box_NONCEBYTES);
+	m_len = data_len + crypto_box_ZEROBYTES;
+	returnvalue = safe_emalloc(sizeof(unsigned char), m_len, 0);
+	m = safe_emalloc(sizeof(char), m_len, 0);
+	memset(m, 0, crypto_box_ZEROBYTES);
+	strncpy(m + crypto_box_ZEROBYTES, data, data_len);
+
+	if (crypto_box(returnvalue, m, m_len, n, pk, sk)) {
+		RETURN_FALSE;
+	}
+
+	if (raw_output) {
+		RETURN_STRINGL((const char *) returnvalue + crypto_box_BOXZEROBYTES, (m_len - crypto_box_BOXZEROBYTES), 1);
+	} else {
+		int digest_len = m_len * 2;
+		char *digest = safe_emalloc(sizeof(char), digest_len, 0);
+		php_nacl_bin2hex(digest, (const unsigned char *) returnvalue + crypto_box_BOXZEROBYTES,
+				m_len - crypto_box_BOXZEROBYTES);
+		efree(returnvalue);
+		RETURN_STRINGL(digest, (m_len - crypto_box_BOXZEROBYTES) * 2, 0);
+	}
 }
 /* }}} */
 
