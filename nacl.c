@@ -58,6 +58,7 @@ const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_auth, NULL)
 	PHP_FE(nacl_crypto_auth_verify, NULL)
 	PHP_FE(nacl_crypto_box, NULL)
+	PHP_FE(nacl_crypto_box_open, NULL)
 	PHP_FE(nacl_crypto_box_keypair, arginfo_nacl_crypto_box_keypair)
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
@@ -574,6 +575,37 @@ PHP_FUNCTION(nacl_crypto_box)
 		efree(returnvalue);
 		RETURN_STRINGL(digest, (m_len - crypto_box_BOXZEROBYTES) * 2, 0);
 	}
+}
+/* }}} */
+
+/* {{{ nacl_crypto_box_open
+ */
+PHP_FUNCTION(nacl_crypto_box_open)
+{
+	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES], n[crypto_box_NONCEBYTES];
+	unsigned char *returnvalue = NULL, *c = NULL, *data = NULL, *nonce = NULL, *pubkey = NULL, *seckey = NULL;
+	int c_len = 0, data_len = 0, nonce_len = 0, pubkey_len = 0, seckey_len = 0;
+	unsigned long long sm_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss", &data, &data_len,
+				&nonce, &nonce_len, &pubkey, &pubkey_len, &seckey, &seckey_len) == FAILURE) {
+		return;
+	}
+
+	strncpy((char *) &sk, (const char *) seckey, crypto_box_SECRETKEYBYTES);
+	strncpy((char *) &pk, (const char *) pubkey, crypto_box_PUBLICKEYBYTES);
+	strncpy((char *) &n, (const char *) nonce, crypto_box_NONCEBYTES);
+	c_len = data_len + crypto_box_BOXZEROBYTES;
+	returnvalue = safe_emalloc(sizeof(char), c_len, 0);
+	c = safe_emalloc(sizeof(char), c_len, 0);
+	memset(c, 0, crypto_box_BOXZEROBYTES);
+	strncpy(c + crypto_box_BOXZEROBYTES, data, data_len);
+
+	if (crypto_box_open(returnvalue, c, c_len, n, pk, sk)) {
+		RETURN_FALSE;
+	}
+
+	RETURN_STRINGL((const char *) returnvalue + crypto_box_ZEROBYTES, c_len - crypto_box_ZEROBYTES, 0);
 }
 /* }}} */
 
