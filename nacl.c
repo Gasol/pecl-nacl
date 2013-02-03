@@ -41,6 +41,10 @@ ZEND_DECLARE_MODULE_GLOBALS(nacl)
 /* True global resources - no need for thread safety here */
 static int le_nacl;
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 1)
+	ZEND_ARG_INFO(1, public_key)
+	ZEND_ARG_INFO(1, secret_key)
+ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_keypair, 0, 0, 1)
 	ZEND_ARG_INFO(1, public_key)
 	ZEND_ARG_INFO(1, secret_key)
@@ -53,6 +57,7 @@ ZEND_END_ARG_INFO()
 const zend_function_entry nacl_functions[] = {
 	PHP_FE(nacl_crypto_auth, NULL)
 	PHP_FE(nacl_crypto_auth_verify, NULL)
+	PHP_FE(nacl_crypto_box_keypair, arginfo_nacl_crypto_box_keypair)
 	PHP_FE(nacl_crypto_stream, NULL)
 	PHP_FE(nacl_crypto_stream_xor, NULL)
 	PHP_FE(nacl_crypto_secretbox, NULL)
@@ -488,6 +493,45 @@ PHP_FUNCTION(nacl_crypto_sign_open)
 	}
 
 	RETURN_STRINGL((const char *) returnvalue, returnvalue_len, 0);
+}
+/* }}} */
+
+/* {{{ nacl_crypto_box_keypair
+ */
+PHP_FUNCTION(nacl_crypto_box_keypair)
+{
+	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES];
+	zval *pubkey = NULL, *seckey = NULL;
+	zend_bool raw_output = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz|b", &pubkey, &seckey, &raw_output) == FAILURE) {
+		return;
+	}
+
+	if (pubkey) {
+		zval_dtor(pubkey);
+	}
+	if (seckey) {
+		zval_dtor(seckey);
+	}
+
+	if (crypto_box_keypair(pk, sk)) {
+		RETURN_FALSE;
+	}
+
+	if (raw_output) {
+		ZVAL_STRINGL(pubkey, ((const char *) &pk), crypto_box_PUBLICKEYBYTES, 1);
+		ZVAL_STRINGL(seckey, ((const char *) &sk), crypto_box_SECRETKEYBYTES, 1);
+	} else {
+		char *pubkey_digest = safe_emalloc(sizeof(char), crypto_box_PUBLICKEYBYTES * 2, 0);
+		char *seckey_digest = safe_emalloc(sizeof(char), crypto_box_SECRETKEYBYTES * 2, 0);
+		php_nacl_bin2hex(pubkey_digest, ((const unsigned char *) &pk), crypto_box_PUBLICKEYBYTES);
+		php_nacl_bin2hex(seckey_digest, ((const unsigned char *) &sk), crypto_box_SECRETKEYBYTES);
+		ZVAL_STRINGL(pubkey, pubkey_digest, crypto_box_PUBLICKEYBYTES * 2, 0);
+		ZVAL_STRINGL(seckey, seckey_digest, crypto_box_SECRETKEYBYTES * 2, 0);
+	}
+
+	RETURN_TRUE;
 }
 /* }}} */
 

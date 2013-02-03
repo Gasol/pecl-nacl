@@ -44,6 +44,7 @@ PHP_MINFO_FUNCTION(nacl);
 
 PHP_FUNCTION(nacl_crypto_auth);
 PHP_FUNCTION(nacl_crypto_auth_verify);
+PHP_FUNCTION(nacl_crypto_box_keypair);
 PHP_FUNCTION(nacl_crypto_stream);
 PHP_FUNCTION(nacl_crypto_stream_xor);
 PHP_FUNCTION(nacl_crypto_secretbox);
