@@ -389,7 +389,7 @@ PHP_FUNCTION(nacl_crypto_sign_keypair)
 	zval *pubkey = NULL, *seckey = NULL;
 	zend_bool raw_output = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z/z/b", &pubkey, &seckey, &raw_output) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz|b", &pubkey, &seckey, &raw_output) == FAILURE) {
 		return;
 	}
 
