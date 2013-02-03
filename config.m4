@@ -24,6 +24,7 @@ if test "$PHP_NACL" != "no"; then
   PHP_SUBST(NACL_SHARED_LIBADD)
   PHP_ADD_INCLUDE($NACL_DIR/include)
   PHP_ADD_LIBRARY(nacl, 1, NACL_SHARED_LIBADD)
+  PHP_EVAL_LIBLINE([-L$NACL_DIR/lib])
 
   PHP_NEW_EXTENSION(nacl, nacl.c, $ext_shared)
 fi
