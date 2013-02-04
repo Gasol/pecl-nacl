@@ -2,6 +2,8 @@
 Check for nacl_crypto_auth_verify
 --SKIPIF--
 <?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+--EXTENSIONS--
+hash
 --FILE--
 <?php
 $key_bytes = array(

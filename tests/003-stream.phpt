@@ -2,6 +2,8 @@
 Check for nacl_crypto_stream
 --SKIPIF--
 <?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+--EXTENSIONS--
+hash
 --FILE--
 <?php
 $nonce_bytes = array(

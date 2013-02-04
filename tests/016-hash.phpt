@@ -2,6 +2,8 @@
 Check for hash
 --SKIPIF--
 <?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+--EXTENSIONS--
+hash
 --FILE--
 <?php
 $data = 'Foo';
