@@ -543,7 +543,7 @@ PHP_FUNCTION(nacl_crypto_box)
 	returnvalue = safe_emalloc(sizeof(unsigned char), m_len, 0);
 	m = safe_emalloc(sizeof(char), m_len, 0);
 	memset(m, 0, crypto_box_ZEROBYTES);
-	strncpy(m + crypto_box_ZEROBYTES, data, data_len);
+	strncpy((char *) m + crypto_box_ZEROBYTES, (const char *) data, data_len);
 
 	if (crypto_box(returnvalue, m, m_len, n, pk, sk)) {
 		RETURN_FALSE;
@@ -583,7 +583,7 @@ PHP_FUNCTION(nacl_crypto_box_open)
 	returnvalue = safe_emalloc(sizeof(char), c_len, 0);
 	c = safe_emalloc(sizeof(char), c_len, 0);
 	memset(c, 0, crypto_box_BOXZEROBYTES);
-	strncpy(c + crypto_box_BOXZEROBYTES, data, data_len);
+	strncpy((char *) c + crypto_box_BOXZEROBYTES, (const char *) data, data_len);
 
 	if (crypto_box_open(returnvalue, c, c_len, n, pk, sk)) {
 		RETURN_FALSE;
