@@ -84,8 +84,8 @@ zend_module_entry nacl_module_entry = {
 	nacl_functions,
 	PHP_MINIT(nacl),
 	PHP_MSHUTDOWN(nacl),
-	PHP_RINIT(nacl),
-	PHP_RSHUTDOWN(nacl),
+	NULL,
+	NULL,
 	PHP_MINFO(nacl),
 #if ZEND_MODULE_API_NO >= 20010901
 	"0.1", /* Replace with version number for your extension */
@@ -157,22 +157,6 @@ PHP_MINIT_FUNCTION(nacl)
 /* {{{ PHP_MSHUTDOWN_FUNCTION
  */
 PHP_MSHUTDOWN_FUNCTION(nacl)
-{
-	return SUCCESS;
-}
-/* }}} */
-
-/* {{{ PHP_RINIT_FUNCTION
- */
-PHP_RINIT_FUNCTION(nacl)
-{
-	return SUCCESS;
-}
-/* }}} */
-
-/* {{{ PHP_RSHUTDOWN_FUNCTION
- */
-PHP_RSHUTDOWN_FUNCTION(nacl)
 {
 	return SUCCESS;
 }
