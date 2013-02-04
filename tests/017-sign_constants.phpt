@@ -1,7 +1,7 @@
 --TEST--
 Check for constants of sign
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 echo constant('NACL_CRYPTO_SIGN_BYTES') . PHP_EOL;

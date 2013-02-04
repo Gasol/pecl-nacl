@@ -1,7 +1,7 @@
 --TEST--
 Check for constants of hash
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 echo constant('NACL_CRYPTO_HASH_BYTES') . PHP_EOL;

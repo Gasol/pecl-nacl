@@ -1,7 +1,7 @@
 --TEST--
 Check for constants of nacl_crypto_auth
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 echo constant('NACL_CRYPTO_AUTH_BYTES') . PHP_EOL;

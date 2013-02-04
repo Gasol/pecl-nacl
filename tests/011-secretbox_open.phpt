@@ -1,7 +1,7 @@
 --TEST--
 Check for secretbox_open
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 $key_bytes = array(

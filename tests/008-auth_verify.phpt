@@ -1,7 +1,7 @@
 --TEST--
 Check for nacl_crypto_auth_verify
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --EXTENSIONS--
 hash
 --FILE--

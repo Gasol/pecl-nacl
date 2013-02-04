@@ -1,7 +1,7 @@
 --TEST--
 Check for sign_keypair
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 var_dump(nacl_crypto_sign_keypair($public_key, $secret_key));

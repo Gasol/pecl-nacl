@@ -1,7 +1,7 @@
 --TEST--
 Check for nacl_crypto_stream_xor
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 

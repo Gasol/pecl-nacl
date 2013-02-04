@@ -1,7 +1,7 @@
 --TEST--
 Check for box_keypair
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 var_dump(nacl_crypto_box_keypair($public_key, $secret_key));

@@ -1,7 +1,7 @@
 --TEST--
 Check for encrypt and decrypt string hello by nacl_crypto_stream_xor
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 $nonce = 'nonce';

@@ -1,7 +1,7 @@
 --TEST--
 Check for onetimeauth_verify
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 $key_bytes = array(

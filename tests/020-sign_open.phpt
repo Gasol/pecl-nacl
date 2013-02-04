@@ -1,7 +1,7 @@
 --TEST--
 Check for sign_open
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 $public_key = hex2bin('d3fd327abf940851f8d21aeda98d89454f4ccc97f531e00cb04c6a31c296b76f');

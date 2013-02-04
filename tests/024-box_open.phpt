@@ -1,7 +1,7 @@
 --TEST--
 Check for box_open
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 $public_key = hex2bin('7637535cd3b6fac7911a76867eecca8ed7607b44a244447eea7d97c6b79c6575');

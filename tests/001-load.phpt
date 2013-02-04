@@ -1,7 +1,7 @@
 --TEST--
 Check for nacl presence
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php 
 echo 'nacl extension is available';

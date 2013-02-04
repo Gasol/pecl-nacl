@@ -1,7 +1,7 @@
 --TEST--
 Check for constants of nacl_crypto_stream
 --SKIPIF--
-<?php if (!extension_loaded('nacl')) echo 'skip'; ?>
+<?php require 'skipif.inc' ?>
 --FILE--
 <?php
 echo constant('NACL_CRYPTO_STREAM_PRIMITIVE') . PHP_EOL;
