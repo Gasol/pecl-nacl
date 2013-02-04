@@ -4,6 +4,8 @@ Check for sign
 <?php require 'skipif.inc' ?>
 --FILE--
 <?php
+require 'hex2bin.inc';
+
 $secret_key = hex2bin('b0b0a9ce2fe3dfd093c334603725f638d64643ae238781f0a73ec5525db7c94bbad832eefe57e76d691c8c7bf4007ca7aabdeebbf708989c310883ddb3579fae');
 $message = 'message';
 $out1 = nacl_crypto_sign('message', $secret_key);
