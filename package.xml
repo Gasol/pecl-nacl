@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.9"
+    version="2.0"
+    xmlns="http://pear.php.net/dtd/package-2.0"
+    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                        http://pear.php.net/dtd/tasks-1.0.xsd
+                        http://pear.php.net/dtd/package-2.0
+                        http://pear.php.net/dtd/package-2.0.xsd">
+    <name>nacl</name>
+    <channel>pecl.php.net</channel>
+    <summary>NaCl is a new easy-to-use high-speed software library for network communication.</summary>
+    <description>NaCl is a new easy-to-use high-speed software library for network communication,
+encryption, decryption, signatures, etc. NaCl's goal is to provide all of the core operations needed
+to build higher-level cryptographic tools.</description>
+    <lead>
+        <name>Gasol Wu</name>
+        <user>gasolwu</user>
+        <email>gasol.wu@gmail.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2013-02-06</date>
+    <version>
+        <release>0.1.0</release>
+        <api>0.1.0</api>
+    </version>
+    <stability>
+        <release>beta</release>
+        <api>beta</api>
+    </stability>
+    <license uri="http://www.php.net/license">PHP License</license>
+    <notes>
+- Initial PECL NaCl release.
+    </notes>
+    <contents>
+        <dir name="/">
+            <dir name="tests">
+                <file name="001-load.phpt" role="test"/>
+                <file name="002-stream_constants.phpt" role="test"/>
+                <file name="003-stream.phpt" role="test"/>
+                <file name="004-stream_xor.phpt" role="test"/>
+                <file name="005-stream_hello.phpt" role="test"/>
+                <file name="006-auth_constants.phpt" role="test"/>
+                <file name="007-auth.phpt" role="test"/>
+                <file name="008-auth_verify.phpt" role="test"/>
+                <file name="009-secretbox_constants.phpt" role="test"/>
+                <file name="010-secretbox.phpt" role="test"/>
+                <file name="011-secretbox_open.phpt" role="test"/>
+                <file name="012-onetimeauth_constants.phpt" role="test"/>
+                <file name="013-onetimeauth.phpt" role="test"/>
+                <file name="014-onetimeauth_verify.phpt" role="test"/>
+                <file name="015-hash_constants.phpt" role="test"/>
+                <file name="016-hash.phpt" role="test"/>
+                <file name="017-sign_constants.phpt" role="test"/>
+                <file name="018-sign_keypair.phpt" role="test"/>
+                <file name="019-sign.phpt" role="test"/>
+                <file name="020-sign_open.phpt" role="test"/>
+                <file name="021-box_constants.phpt" role="test"/>
+                <file name="022-box_keypair.phpt" role="test"/>
+                <file name="023-box.phpt" role="test"/>
+                <file name="024-box_open.phpt" role="test"/>
+                <file name="hex2bin.inc" role="test"/>
+                <file name="skipif.inc" role="test"/>
+            </dir>
+            <file name="CREDITS" role="doc" />
+            <file name="EXPERIMENTAL" role="doc" />
+            <file name="LICENSE" role="doc" />
+            <file name="README.md" role="doc" />
+            <file name="config.m4" role="src" />
+            <file name="nacl.c" role="src" />
+            <file name="php_nacl.h" role="src" />
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.3.3</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+    <providesextension>nacl</providesextension>
+    <extsrcrelease />
+    <changelog>
+        <release>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <version>
+                <release>0.1.0</release>
+                <api>0.1.0</api>
+            </version>
+            <date>2013-02-06</date>
+            <notes>
+- Initial PECL NaCl release.
+            </notes>
+        </release>
+    </changelog>
+</package>
