@@ -41,6 +41,8 @@ ZEND_DECLARE_MODULE_GLOBALS(nacl)
 /* True global resources - no need for thread safety here */
 static int le_nacl;
 
+/* {{{ arginfo
+ */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 1)
 	ZEND_ARG_INFO(1, public_key)
 	ZEND_ARG_INFO(1, secret_key)
@@ -49,6 +51,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_keypair, 0, 0, 1)
 	ZEND_ARG_INFO(1, public_key)
 	ZEND_ARG_INFO(1, secret_key)
 ZEND_END_ARG_INFO()
+/* }}} */
 
 /* {{{ nacl_functions[]
  *
