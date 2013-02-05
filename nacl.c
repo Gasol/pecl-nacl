@@ -43,14 +43,92 @@ static int le_nacl;
 
 /* {{{ arginfo
  */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_auth, 0, 0, 2)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_auth_verify, 0, 0, 3)
+	ZEND_ARG_INFO(0, crypted)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box, 0, 0, 4)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, public_key)
+	ZEND_ARG_INFO(0, secret_key)
+	ZEND_ARG_INFO(0, raw_output)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_open, 0, 0, 4)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, public_key)
+	ZEND_ARG_INFO(0, secret_key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 2)
 	ZEND_ARG_INFO(1, public_key)
 	ZEND_ARG_INFO(1, secret_key)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_keypair, 0, 0, 1)
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_stream, 0, 0, 3)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_stream_xor, 0, 0, 3)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_secretbox, 0, 0, 3)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_secretbox_open, 0, 0, 3)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, nonce)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign, 0, 0, 2)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, secret_key)
+	ZEND_ARG_INFO(0, raw_output)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_open, 0, 0, 2)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, public_key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_sign_keypair, 0, 0, 2)
 	ZEND_ARG_INFO(1, public_key)
 	ZEND_ARG_INFO(1, secret_key)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_onetimeauth, 0, 0, 2)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_onetimeauth_verify, 0, 0, 3)
+	ZEND_ARG_INFO(0, crypted)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_hash, 0, 0, 1)
+	ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* {{{ nacl_functions[]
@@ -58,21 +136,21 @@ ZEND_END_ARG_INFO()
  * Every user visible function must have an entry in nacl_functions[].
  */
 const zend_function_entry nacl_functions[] = {
-	PHP_FE(nacl_crypto_auth, NULL)
-	PHP_FE(nacl_crypto_auth_verify, NULL)
-	PHP_FE(nacl_crypto_box, NULL)
-	PHP_FE(nacl_crypto_box_open, NULL)
+	PHP_FE(nacl_crypto_auth, arginfo_nacl_crypto_auth)
+	PHP_FE(nacl_crypto_auth_verify, arginfo_nacl_crypto_auth_verify)
+	PHP_FE(nacl_crypto_box, arginfo_nacl_crypto_box)
+	PHP_FE(nacl_crypto_box_open, arginfo_nacl_crypto_box_open)
 	PHP_FE(nacl_crypto_box_keypair, arginfo_nacl_crypto_box_keypair)
-	PHP_FE(nacl_crypto_stream, NULL)
-	PHP_FE(nacl_crypto_stream_xor, NULL)
-	PHP_FE(nacl_crypto_secretbox, NULL)
-	PHP_FE(nacl_crypto_secretbox_open, NULL)
-	PHP_FE(nacl_crypto_sign, NULL)
-	PHP_FE(nacl_crypto_sign_open, NULL)
+	PHP_FE(nacl_crypto_stream, arginfo_nacl_crypto_stream)
+	PHP_FE(nacl_crypto_stream_xor, arginfo_nacl_crypto_stream_xor)
+	PHP_FE(nacl_crypto_secretbox, arginfo_nacl_crypto_secretbox)
+	PHP_FE(nacl_crypto_secretbox_open, arginfo_nacl_crypto_secretbox_open)
+	PHP_FE(nacl_crypto_sign, arginfo_nacl_crypto_sign)
+	PHP_FE(nacl_crypto_sign_open, arginfo_nacl_crypto_sign_open)
 	PHP_FE(nacl_crypto_sign_keypair, arginfo_nacl_crypto_sign_keypair)
-	PHP_FE(nacl_crypto_onetimeauth, NULL)
-	PHP_FE(nacl_crypto_onetimeauth_verify, NULL)
-	PHP_FE(nacl_crypto_hash, NULL)
+	PHP_FE(nacl_crypto_onetimeauth, arginfo_nacl_crypto_onetimeauth)
+	PHP_FE(nacl_crypto_onetimeauth_verify, arginfo_nacl_crypto_onetimeauth_verify)
+	PHP_FE(nacl_crypto_hash, arginfo_nacl_crypto_hash)
 	PHP_FE_END
 };
 /* }}} */
