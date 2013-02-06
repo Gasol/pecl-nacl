@@ -36,6 +36,10 @@ extern zend_module_entry nacl_module_entry;
 #include "TSRM.h"
 #endif
 
+#ifndef PHP_FE_END
+#define PHP_FE_END {0, 0, 0, 0}
+#endif
+
 PHP_MINIT_FUNCTION(nacl);
 PHP_MSHUTDOWN_FUNCTION(nacl);
 PHP_RINIT_FUNCTION(nacl);
