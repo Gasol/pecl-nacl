@@ -13,3 +13,6 @@ before_script:
 
 script: TESTS=-q TEST_PHP_EXECUTABLE=php make test
 
+notifications:
+  email:
+    - gasol.wu+travis@gmail.com
