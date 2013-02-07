@@ -1,6 +1,8 @@
 PHP NaCl
 ========
 
+[![Build Status](https://travis-ci.org/Gasol/pecl-nacl.png)](https://travis-ci.org/Gasol/pecl-nacl)
+
 Intro
 -----
 
