@@ -10,3 +10,6 @@ before_script:
   - phipze
   - ./configure --with-nacl=nacl-20110221/build/travis/include/$abi --with-nacl-libdir=nacl-20110221/build/travis/lib/$abi
   - make
+
+script: TESTS=-q TEST_PHP_EXECUTABLE=php make test
+
