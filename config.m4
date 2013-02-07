@@ -1,5 +1,8 @@
-PHP_ARG_WITH(nacl, for nacl support,
-[  --with-nacl             Include nacl support])
+PHP_ARG_WITH(nacl, for nacl headers,
+[  --with-nacl[=DIR]         Include nacl support])
+
+PHP_ARG_WITH(nacl-libdir, for the location of nacl libraries,
+[  --with-nacl-libdir[=DIR]  Path to nacl install prefix], no, no)
 
 if test "$PHP_NACL" != "no"; then
   SEARCH_FOR="crypto_stream.h"
@@ -21,10 +24,10 @@ if test "$PHP_NACL" != "no"; then
     AC_MSG_ERROR([Please reinstall the nacl distribution])
   fi
 
-  SEARCH_FOR="libnacl.a"
-  if test -r $PHP_NACL/$SEARCH_FOR; then
-    NACL_LIBDIR=$PHP_NACL
+  if test "$PHP_NACL_LIBDIR" != "no"; then
+    NACL_LIBDIR=$PHP_NACL_LIBDIR
   else
+    SEARCH_FOR="libnacl.a"
     SEARCH_PATH="/usr/local/lib /usr/lib"
     AC_MSG_CHECKING([for libnacl.a in default path])
     for i in $SEARCH_PATH ; do
