@@ -10,5 +10,5 @@ sed -i -e 's, -m32,,' nacl-20110221/okcompilers/c nacl-20110221/okcompilers/cpp
 sed -i -e 's,\(shorthostname=\).*,\1"travis",' nacl-20110221/do
 cd nacl-20110221/
 ./do
-arch=`build/travis/bin/okabi`
+arch=$(build/travis/bin/okabi)
 ar -r build/travis/lib/$arch/libnacl.a build/travis/lib/$arch/randombytes.o
