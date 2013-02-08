@@ -11,7 +11,7 @@ before_script:
   - ./configure --with-nacl=nacl-20110221/build/travis/include/$arch --with-nacl-libdir=nacl-20110221/build/travis/lib/$arch
   - make
 
-script: TESTS="-q --show-diff" TEST_PHP_EXECUTABLE=php make test
+script: REPORT_EXIT_STATUS=1 TESTS="-q --show-diff" TEST_PHP_EXECUTABLE=php make test
 
 notifications:
   email:
