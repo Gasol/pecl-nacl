@@ -8,7 +8,7 @@ before_script:
   - sh travis/install_nacl.sh
   - arch=`nacl-20110221/build/travis/bin/okabi`
   - phpize
-  - ./configure --with-nacl=nacl-20110221/build/travis/include/$abi --with-nacl-libdir=nacl-20110221/build/travis/lib/$abi
+  - ./configure --with-nacl=nacl-20110221/build/travis/include/$arch --with-nacl-libdir=nacl-20110221/build/travis/lib/$arch
   - make
 
 script: TESTS=-q TEST_PHP_EXECUTABLE=php make test
