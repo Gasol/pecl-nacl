@@ -10,9 +10,9 @@ echo constant('NACL_CRYPTO_STREAM_VERSION') . PHP_EOL;
 echo constant('NACL_CRYPTO_STREAM_NONCEBYTES') . PHP_EOL;
 echo constant('NACL_CRYPTO_STREAM_KEYBYTES') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 xsalsa20
-crypto_stream/xsalsa20/ref
+crypto_stream/xsalsa20/%s
 -
 24
 32

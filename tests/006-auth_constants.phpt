@@ -10,10 +10,10 @@ echo constant('NACL_CRYPTO_AUTH_PRIMITIVE') . PHP_EOL;
 echo constant('NACL_CRYPTO_AUTH_IMPLEMENTATION') . PHP_EOL;
 echo constant('NACL_CRYPTO_AUTH_VERSION') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 32
 32
 hmacsha512256
-crypto_auth/hmacsha512256/ref
+crypto_auth/hmacsha512256/%s
 -
 

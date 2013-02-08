@@ -9,8 +9,8 @@ echo constant('NACL_CRYPTO_HASH_PRIMITIVE') . PHP_EOL;
 echo constant('NACL_CRYPTO_HASH_IMPLEMENTATION') . PHP_EOL;
 echo constant('NACL_CRYPTO_HASH_VERSION') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 64
 sha512
-crypto_hash/sha512/ref
+crypto_hash/sha512/%s
 -

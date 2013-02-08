@@ -14,7 +14,7 @@ echo constant('NACL_CRYPTO_BOX_PRIMITIVE') . PHP_EOL;
 echo constant('NACL_CRYPTO_BOX_IMPLEMENTATION') . PHP_EOL;
 echo constant('NACL_CRYPTO_BOX_VERSION') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 32
 32
 32
@@ -22,6 +22,6 @@ echo constant('NACL_CRYPTO_BOX_VERSION') . PHP_EOL;
 32
 16
 curve25519xsalsa20poly1305
-crypto_box/curve25519xsalsa20poly1305/ref
+crypto_box/curve25519xsalsa20poly1305/%s
 -
 

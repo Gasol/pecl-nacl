@@ -11,11 +11,11 @@ echo constant('NACL_CRYPTO_SIGN_PRIMITIVE') . PHP_EOL;
 echo constant('NACL_CRYPTO_SIGN_IMPLEMENTATION') . PHP_EOL;
 echo constant('NACL_CRYPTO_SIGN_VERSION') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 64
 32
 64
 edwards25519sha512batch
-crypto_sign/edwards25519sha512batch/ref
+crypto_sign/edwards25519sha512batch/%s
 -
 

@@ -12,12 +12,12 @@ echo constant('NACL_CRYPTO_SECRETBOX_PRIMITIVE') . PHP_EOL;
 echo constant('NACL_CRYPTO_SECRETBOX_IMPLEMENTATION') . PHP_EOL;
 echo constant('NACL_CRYPTO_SECRETBOX_VERSION') . PHP_EOL;
 ?>
---EXPECT--
+--EXPECTF--
 32
 24
 32
 16
 xsalsa20poly1305
-crypto_secretbox/xsalsa20poly1305/ref
+crypto_secretbox/xsalsa20poly1305/%s
 -
 
