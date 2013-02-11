@@ -21,6 +21,8 @@
 #ifndef PHP_NACL_H
 #define PHP_NACL_H
 
+#define PHP_NACL_VERSION "0.1.0"
+
 extern zend_module_entry nacl_module_entry;
 #define phpext_nacl_ptr &nacl_module_entry
 

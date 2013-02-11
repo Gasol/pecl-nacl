@@ -169,7 +169,7 @@ zend_module_entry nacl_module_entry = {
 	NULL,
 	PHP_MINFO(nacl),
 #if ZEND_MODULE_API_NO >= 20010901
-	"0.1", /* Replace with version number for your extension */
+	PHP_NACL_VERSION,
 #endif
 	STANDARD_MODULE_PROPERTIES
 };
@@ -249,6 +249,7 @@ PHP_MINFO_FUNCTION(nacl)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "nacl support", "enabled");
+	php_info_print_table_row(2, "Version", PHP_NACL_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */
