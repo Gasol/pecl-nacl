@@ -248,7 +248,7 @@ PHP_MSHUTDOWN_FUNCTION(nacl)
 PHP_MINFO_FUNCTION(nacl)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "nacl support", "enabled");
+	php_info_print_table_header(2, "NaCl support", "enabled");
 	php_info_print_table_row(2, "Version", PHP_NACL_VERSION);
 	php_info_print_table_end();
 }
