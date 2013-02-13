@@ -4,6 +4,9 @@ php:
   - "5.4"
   - "5.3"
 
+env:
+  - REPORT_EXIT_STATUS=1 TESTS="-q --show-diff" TEST_PHP_EXECUTABLE=php
+
 before_script:
   - sh travis/install_nacl.sh
   - arch=`nacl-20110221/build/travis/bin/okabi`
@@ -11,7 +14,7 @@ before_script:
   - ./configure --with-nacl=nacl-20110221/build/travis/include/$arch --with-nacl-libdir=nacl-20110221/build/travis/lib/$arch
   - make
 
-script: REPORT_EXIT_STATUS=1 TESTS="-q --show-diff" TEST_PHP_EXECUTABLE=php make test
+script: make test
 
 notifications:
   email:
