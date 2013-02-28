@@ -47,10 +47,7 @@ Homebrew
 
 #### FreeBSD
 
-See [ports/175820](http://www.freebsd.org/cgi/query-pr.cgi?pr=ports/175820)
-
     $ cd /usr/ports/security/nacl
-    $ curl 'http://www.freebsd.org/cgi/query-pr.cgi?pr=ports%2F175820&getpatch=1' | patch
     $ make install clean
 
 #### Build from source
