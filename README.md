@@ -71,6 +71,7 @@ Homebrew
 
 #### Example
 ```php
+<?php
 $nonce = str_pad("", 24, "0123abc");
 $plain = "To have eyes that see and ears that hear";
 list($bobpk, $bobsk) = nacl_crypto_box_keypair();
@@ -79,6 +80,7 @@ $cipher = nacl_crypto_box($plain, $nonce, $bobpk, $alicesk);
 $plain_new = nacl_crypto_box_open($cipher, $nonce, $alicepk, $bobsk);
 
 echo "Equal: " . ($plain === $plain_new ? "yes" : "no") . "\n";
+?>
 ```
 
 TODO
