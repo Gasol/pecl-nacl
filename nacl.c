@@ -69,9 +69,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_open, 0, 0, 4)
 	ZEND_ARG_INFO(0, secret_key)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 2)
-	ZEND_ARG_INFO(1, public_key)
-	ZEND_ARG_INFO(1, secret_key)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_box_keypair, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_nacl_crypto_stream, 0, 0, 3)
@@ -465,7 +463,8 @@ PHP_FUNCTION(nacl_crypto_hash)
 }
 /* }}} */
 
-/* {{{ nacl_crypto_sign_keypair
+
+/*  nacl_crypto_sign_keypair
  */
 PHP_FUNCTION(nacl_crypto_sign_keypair)
 {
@@ -502,7 +501,7 @@ PHP_FUNCTION(nacl_crypto_sign_keypair)
 
 	RETURN_TRUE;
 }
-/* }}} */
+/*  */
 
 /* {{{ nacl_crypto_sign
  */
@@ -564,114 +563,134 @@ PHP_FUNCTION(nacl_crypto_sign_open)
 }
 /* }}} */
 
-/* {{{ nacl_crypto_box_keypair
- */
-PHP_FUNCTION(nacl_crypto_box_keypair)
-{
-	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES];
-	zval *pubkey = NULL, *seckey = NULL;
-	zend_bool raw_output = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz|b", &pubkey, &seckey, &raw_output) == FAILURE) {
-		return;
-	}
-
-	if (pubkey) {
-		zval_dtor(pubkey);
-	}
-	if (seckey) {
-		zval_dtor(seckey);
-	}
-
-	if (crypto_box_keypair(pk, sk)) {
-		RETURN_FALSE;
-	}
-
-	if (raw_output) {
-		ZVAL_STRINGL(pubkey, ((const char *) &pk), crypto_box_PUBLICKEYBYTES, 1);
-		ZVAL_STRINGL(seckey, ((const char *) &sk), crypto_box_SECRETKEYBYTES, 1);
-	} else {
-		char *pubkey_digest = safe_emalloc(sizeof(char), crypto_box_PUBLICKEYBYTES * 2, 0);
-		char *seckey_digest = safe_emalloc(sizeof(char), crypto_box_SECRETKEYBYTES * 2, 0);
-		php_nacl_bin2hex(pubkey_digest, ((const unsigned char *) &pk), crypto_box_PUBLICKEYBYTES);
-		php_nacl_bin2hex(seckey_digest, ((const unsigned char *) &sk), crypto_box_SECRETKEYBYTES);
-		ZVAL_STRINGL(pubkey, pubkey_digest, crypto_box_PUBLICKEYBYTES * 2, 0);
-		ZVAL_STRINGL(seckey, seckey_digest, crypto_box_SECRETKEYBYTES * 2, 0);
-	}
-
-	RETURN_TRUE;
-}
-/* }}} */
-
-/* {{{ nacl_crypto_box
- */
+/* {{{  proto string e_crypto_box(string $message, string $nonce, string $public_key, $secret_key)
+	Encrypt a message
+*/
 PHP_FUNCTION(nacl_crypto_box)
 {
-	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES], n[crypto_box_NONCEBYTES];
-	unsigned char *returnvalue = NULL, *m = NULL, *data = NULL, *nonce = NULL, *pubkey = NULL, *seckey = NULL;
-	int m_len = 0, data_len = 0, nonce_len = 0, pubkey_len = 0, seckey_len = 0;
-	unsigned long long sm_len = 0;
-	zend_bool raw_output = 0;
+	unsigned char *c, *m, *message, *nonce, *pk, *sk;
+	long m_len, message_len, nonce_len, pk_len, sk_len;
+	int rc;
+	int common_len;
+	zend_bool raw = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss|b", &data, &data_len,
-				&nonce, &nonce_len, &pubkey, &pubkey_len, &seckey, &seckey_len, &raw_output) == FAILURE) {
-		return;
-	}
-
-	strncpy((char *) &sk, (const char *) seckey, crypto_box_SECRETKEYBYTES);
-	strncpy((char *) &pk, (const char *) pubkey, crypto_box_PUBLICKEYBYTES);
-	strncpy((char *) &n, (const char *) nonce, crypto_box_NONCEBYTES);
-	m_len = data_len + crypto_box_ZEROBYTES;
-	returnvalue = safe_emalloc(sizeof(unsigned char), m_len, 0);
-	m = safe_emalloc(sizeof(char), m_len, 0);
-	memset(m, 0, crypto_box_ZEROBYTES);
-	strncpy((char *) m + crypto_box_ZEROBYTES, (const char *) data, data_len);
-
-	if (crypto_box(returnvalue, m, m_len, n, pk, sk)) {
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss|b", &message, &message_len, &nonce, &nonce_len, &pk, &pk_len, &sk, &sk_len, &raw) == FAILURE) {
 		RETURN_FALSE;
 	}
 
-	if (raw_output) {
-		RETURN_STRINGL((const char *) returnvalue + crypto_box_BOXZEROBYTES, (m_len - crypto_box_BOXZEROBYTES), 1);
-	} else {
-		int digest_len = m_len * 2;
-		char *digest = safe_emalloc(sizeof(char), digest_len, 0);
-		php_nacl_bin2hex(digest, (const unsigned char *) returnvalue + crypto_box_BOXZEROBYTES,
-				m_len - crypto_box_BOXZEROBYTES);
-		efree(returnvalue);
-		RETURN_STRINGL(digest, (m_len - crypto_box_BOXZEROBYTES) * 2, 0);
+	if(nonce_len != crypto_box_NONCEBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect nounce length. nonce should be %d", crypto_box_NONCEBYTES);
+		RETURN_FALSE;
 	}
+
+	if(pk_len != crypto_box_PUBLICKEYBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect public_key length. public_key should be %d", crypto_box_PUBLICKEYBYTES);
+		RETURN_FALSE;
+	}
+
+	if(sk_len != crypto_box_SECRETKEYBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect secret_key length. secret_key should be %d", crypto_box_SECRETKEYBYTES);
+		RETURN_FALSE;
+	}
+
+	common_len = crypto_box_ZEROBYTES + message_len;
+	m = safe_emalloc(common_len, sizeof(unsigned char), 1);
+	memset(m, 0, crypto_box_ZEROBYTES);
+	memcpy(m + crypto_box_ZEROBYTES, message, message_len);
+
+	c = safe_emalloc(common_len + 1, sizeof(unsigned char), 1); // RETURN_STRINGL needs a NULL at the last byte, one char bigger then m
+	memset(c, 0, crypto_box_BOXZEROBYTES);
+
+	rc = crypto_box(c, m, common_len, nonce, pk, sk);
+	efree(m);
+	*(c + crypto_box_BOXZEROBYTES + message_len + crypto_box_BOXZEROBYTES) = 0x0; // RETURN_STRINGL needs a NULL at the last byte
+
+	if(rc == 0) {
+		RETVAL_STRINGL(crypto_box_BOXZEROBYTES + c, message_len + crypto_box_BOXZEROBYTES, 1);
+	}
+	else {
+		
+		RETVAL_FALSE;
+	}
+
+	efree(c);
 }
 /* }}} */
 
-/* {{{ nacl_crypto_box_open
- */
-PHP_FUNCTION(nacl_crypto_box_open)
+/* {{{ proto array e_crypto_box_keypair()
+*/
+PHP_FUNCTION(nacl_crypto_box_keypair)
 {
-	unsigned char pk[crypto_box_PUBLICKEYBYTES], sk[crypto_box_SECRETKEYBYTES], n[crypto_box_NONCEBYTES];
-	unsigned char *returnvalue = NULL, *c = NULL, *data = NULL, *nonce = NULL, *pubkey = NULL, *seckey = NULL;
-	int c_len = 0, data_len = 0, nonce_len = 0, pubkey_len = 0, seckey_len = 0;
-	unsigned long long sm_len = 0;
+	unsigned char *pk, *sk;
+	int rc;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss", &data, &data_len,
-				&nonce, &nonce_len, &pubkey, &pubkey_len, &seckey, &seckey_len) == FAILURE) {
-		return;
-	}
-
-	strncpy((char *) &sk, (const char *) seckey, crypto_box_SECRETKEYBYTES);
-	strncpy((char *) &pk, (const char *) pubkey, crypto_box_PUBLICKEYBYTES);
-	strncpy((char *) &n, (const char *) nonce, crypto_box_NONCEBYTES);
-	c_len = data_len + crypto_box_BOXZEROBYTES;
-	returnvalue = safe_emalloc(sizeof(char), c_len, 0);
-	c = safe_emalloc(sizeof(char), c_len, 0);
-	memset(c, 0, crypto_box_BOXZEROBYTES);
-	strncpy((char *) c + crypto_box_BOXZEROBYTES, (const char *) data, data_len);
-
-	if (crypto_box_open(returnvalue, c, c_len, n, pk, sk)) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
 		RETURN_FALSE;
 	}
 
-	RETURN_STRINGL((const char *) returnvalue + crypto_box_ZEROBYTES, c_len - crypto_box_ZEROBYTES, 0);
+	pk = safe_emalloc(crypto_box_PUBLICKEYBYTES + 1, sizeof(unsigned char), 1);
+	*(pk + crypto_box_PUBLICKEYBYTES) = 0x0;
+	sk = safe_emalloc(crypto_box_SECRETKEYBYTES + 1, sizeof(unsigned char), 1);
+	*(sk + crypto_box_SECRETKEYBYTES) = 0x0;
+	rc = crypto_box_keypair(pk, sk);
+	array_init(return_value);
+	add_next_index_stringl(return_value, pk, crypto_box_PUBLICKEYBYTES, 0);
+	add_next_index_stringl(return_value, sk, crypto_box_SECRETKEYBYTES, 0);
+}
+/* }}} */
+
+/* {{{  proto string e_crypto_box_open(string $encrypted, string $nonce, string $public_key, $secret_key)
+	Decrypt a message
+*/
+PHP_FUNCTION(nacl_crypto_box_open)
+{
+	unsigned char *c, *message, *ciphertext, *nonce, *pk, *sk;
+	long c_len, ciphertext_len, nonce_len, pk_len, sk_len;
+	int rc;
+	int common_len;
+
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss", &ciphertext, &ciphertext_len, &nonce, &nonce_len, &pk, &pk_len, &sk, &sk_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	if(ciphertext_len <= crypto_box_BOXZEROBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect cipher length: %d. encrypted string should be > %d", ciphertext_len, crypto_box_BOXZEROBYTES);
+		RETURN_FALSE;
+	}
+
+	if(nonce_len != crypto_box_NONCEBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect nounce length. nonce should be %d", crypto_box_NONCEBYTES);
+		RETURN_FALSE;
+	}
+
+	if(pk_len != crypto_box_PUBLICKEYBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect public_key length. public_key should be %d", crypto_box_PUBLICKEYBYTES);
+		RETURN_FALSE;
+	}
+
+	if(sk_len != crypto_box_SECRETKEYBYTES) {
+		zend_throw_exception_ex(NULL, 1 TSRMLS_CC, "Incorrect secret_key length. secret_key should be %d", crypto_box_SECRETKEYBYTES);
+		RETURN_FALSE;
+	}
+
+	common_len = ciphertext_len - crypto_box_BOXZEROBYTES + crypto_box_ZEROBYTES;
+	c = safe_emalloc(common_len, sizeof(unsigned char), 1);
+	memset(c, 0, crypto_box_BOXZEROBYTES);
+	memcpy(c + crypto_box_BOXZEROBYTES, ciphertext, ciphertext_len);
+
+	message = safe_emalloc(common_len + 1, sizeof(unsigned char), 1);
+	rc = crypto_box_open(message, c, common_len, nonce, pk, sk);
+	*(message + common_len) = 0x0;
+	efree(c);
+
+	if(rc == 0) {
+		RETVAL_STRINGL(crypto_box_ZEROBYTES + message, ciphertext_len - crypto_box_BOXZEROBYTES, 1);
+	}
+	else {
+		RETVAL_FALSE;
+	}
+	efree(message);
 }
 /* }}} */
 

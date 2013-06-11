@@ -59,6 +59,16 @@ Homebrew
     $ sed -i -e "s/$/ -fPIC/" ${WRKSRC}/okcompilers/c
     $ ./do
 
+#### Ubuntu
+
+	$ bash alethia7/install_nacl.sh
+	$ phpize --clean
+	$ phpize
+	$ # Replace hostname with your directory
+	$ ./configure --with-nacl=alethia7/nacl-20110221/build/<hostname ?>/include/x86 --with-nacl-libdir=alethia7/nacl-20110221/build/<hostname ?>/lib/x86
+	$ make
+	$ sudo make install
+
 TODO
 ----
 
