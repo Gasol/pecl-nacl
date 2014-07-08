@@ -16,7 +16,7 @@ Requirements
 * PHP 5.3.3 or later
 * NaCl 20110221 with PIC support
 
-Installation
+Installation as PHP module
 ------------
 
 ### Install from source
@@ -36,7 +36,7 @@ Add nacl extension into your php.ini
     extension=nacl.so
 
 
-NaCl Installation Notes
+NaCl library installation (for development)
 -----------------------
 
 #### Mac
