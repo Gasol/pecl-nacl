@@ -6,7 +6,7 @@ PHP NaCl
 Intro
 -----
 
-This is a PHP interface to [NaCl](http://nacl.cace-project.eu/), not Google's NativeClient. 
+This is a PHP interface to [NaCl](https://nacl.cr.yp.to/), not Google's NativeClient. 
 
 NaCl is a new easy-to-use high-speed software library for network communication, encryption, decryption, signatures, etc. NaCl's goal is to provide all of the core operations needed to build higher-level cryptographic tools.
 
